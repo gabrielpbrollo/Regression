@@ -2,7 +2,6 @@ package domain.usecase
 
 import domain.entities.RegressionResult
 import domain.entities.Sample
-import java.lang.Exception
 import kotlin.math.pow
 
 /**
@@ -35,11 +34,15 @@ class LinearRegressionUseCase {
         }
 
         val a = ((n * xySum) - (xSum * ySum)) / ((n * xPowSum) - xSum.pow(2))
+        if (a.isNaN()) throw ValueIsNaNException("a")
 
         val b = ((ySum * xPowSum) - (xSum * xySum)) / ((n * xPowSum) - xSum.pow(2))
+        if (b.isNaN()) throw ValueIsNaNException("b")
 
         return RegressionResult(a, b)
     }
 
-    object EmptySampleListException: Exception("Sample list must not be empty")
+    object EmptySampleListException : Exception("Sample list must not be empty")
+
+    class ValueIsNaNException(value: String) : Exception("$value is NaN")
 }
